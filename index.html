@@ -313,16 +313,91 @@
       padding-bottom: 2px;
     }
 
-    .restart {
-      margin-top: 34px;
-      font-family: Inter, Arial, sans-serif;
-      font-size: 0.64rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .contact-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(23, 23, 23, 0.42);
+      z-index: 1000;
     }
 
-    .restart a {
+    .contact-modal.is-open { display: flex; }
+
+    .contact-card {
+      width: min(100%, 430px);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 30px 26px 26px;
+      text-align: center;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.16);
+      position: relative;
+    }
+
+    .contact-card h3 {
+      margin: 0 0 12px;
+      font-family: "Cormorant Garamond", Garamond, Georgia, serif;
+      font-size: 1.55rem;
+      letter-spacing: 0;
+      text-transform: none;
+      font-weight: 500;
+    }
+
+    .contact-email {
+      display: block;
+      margin: 10px 0 22px;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.76rem;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .contact-option {
+      appearance: none;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 10px 16px;
       text-decoration: none;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+
+    .contact-option.primary {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .contact-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.45rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .copy-status {
+      min-height: 1.3em;
+      margin: 14px 0 0;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.62rem;
       color: var(--muted);
     }
 
@@ -462,7 +537,7 @@
 <li><a href="#one-4"><span class="num">ONE.4</span><span class="title">My Cat, My Dog, Chess &amp; Tetris</span></a></li>
 <li><a href="#one-5"><span class="num">ONE.5</span><span class="title">Golf: The Tai Chi of Capitalists?</span></a></li>
 <li><a href="#one-6"><span class="num">ONE.6</span><span class="title">The Ongoing Conversation</span></a></li>
-<li><a href="#one-7"><span class="num">ONE.7</span><span class="title">How It All Adds Up</span></a></li>
+<li><a href="#one-7"><span class="num">ONE.7</span><span class="title">SUM + ARISE</span></a></li>
 </ol>
 </div>
 </section>
@@ -673,7 +748,7 @@
 <div class="content">
 <img alt="Ensō for ONE.7, the Reveal" class="enso" src="images/enso-reveal.png"/>
 <p class="eyebrow">ONE.7</p>
-<h2>How It All Adds Up</h2>
+<h2>SUM + ARISE</h2>
 
 <div class="spoken"><p>1 + 2 + 3 + 4 + 5 + 6 = 7 = <em>ONE</em></p>
 <p>Doesn’t make much sense…<br/>does it?</p>
@@ -712,10 +787,70 @@
 </div>
 
 
-<p class="contact-invitation">To share your Reflection, or simply get in touch…</p><p><a class="contact-link" href="mailto:flowsaxme@gmail.com?subject=Insights%20for%20Your%20Consideration">Click here. <em>Or not.</em></a></p><p class="restart"><a href="#home">Start Again. <em>Or Not.</em></a></p></div>
+<p class="contact-invitation">To share your Reflection, or simply get in touch…</p>
+<p><a class="contact-link" href="#contact" id="contact-trigger">Click here. <em>Or not.</em></a></p>
+</div>
 </section>
+
+<div aria-hidden="true" aria-labelledby="contact-title" class="contact-modal" id="contact-modal" role="dialog">
+  <div class="contact-card">
+    <button aria-label="Close contact options" class="contact-close" id="contact-close" type="button">×</button>
+    <h3 id="contact-title">Get in touch</h3>
+    <p>Write whatever you like—a Reflection, a booking enquiry, or simply hello.</p>
+    <span class="contact-email">flowsaxme@gmail.com</span>
+    <div class="contact-options">
+      <a class="contact-option primary" href="mailto:flowsaxme@gmail.com?subject=Insights%20for%20Your%20Consideration">Open email</a>
+      <a class="contact-option" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=flowsaxme%40gmail.com&amp;su=Insights%20for%20Your%20Consideration" rel="noopener noreferrer" target="_blank">Open Gmail</a>
+      <button class="contact-option" id="copy-email" type="button">Copy address</button>
+    </div>
+    <p aria-live="polite" class="copy-status" id="copy-status"></p>
+  </div>
+</div>
+
 <footer>
 <span aria-hidden="true" class="seal-dot"></span>Daniele dell’Erba / FlowSax
   </footer>
+<script>
+  const contactTrigger = document.getElementById('contact-trigger');
+  const contactModal = document.getElementById('contact-modal');
+  const contactClose = document.getElementById('contact-close');
+  const copyEmail = document.getElementById('copy-email');
+  const copyStatus = document.getElementById('copy-status');
+
+  function openContactModal(event) {
+    event.preventDefault();
+    contactModal.classList.add('is-open');
+    contactModal.setAttribute('aria-hidden', 'false');
+    contactClose.focus();
+  }
+
+  function closeContactModal() {
+    contactModal.classList.remove('is-open');
+    contactModal.setAttribute('aria-hidden', 'true');
+    contactTrigger.focus();
+  }
+
+  contactTrigger.addEventListener('click', openContactModal);
+  contactClose.addEventListener('click', closeContactModal);
+
+  contactModal.addEventListener('click', (event) => {
+    if (event.target === contactModal) closeContactModal();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && contactModal.classList.contains('is-open')) {
+      closeContactModal();
+    }
+  });
+
+  copyEmail.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText('flowsaxme@gmail.com');
+      copyStatus.textContent = 'Email address copied.';
+    } catch {
+      copyStatus.textContent = 'Copy this address: flowsaxme@gmail.com';
+    }
+  });
+</script>
 </body>
 </html>
