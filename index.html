@@ -1,546 +1,711 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Insights for Your Consideration</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper: #efe9dd;
-    --paper-2: #e9e2d3;
-    --ink: #1c1a17;
-    --ink-soft: #46423b;
-    --ink-faint: #8b8577;
-    --rule: rgba(28,26,23,0.18);
-    --accent: #a3382a;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Insights for Your Consideration — a conversation between spoken word, saxophone and silence." />
+  <title>Insights for Your Consideration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f6f3ec;
+      --ink: #171717;
+      --muted: #77736b;
+      --line: rgba(23, 23, 23, 0.16);
+      --verm: #a62b20;
+      --max: 780px;
+    }
 
-  *{margin:0;padding:0;box-sizing:border-box;}
+    * { box-sizing: border-box; }
 
-  html{
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-  }
+    html { scroll-behavior: smooth; }
 
-  body{
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Cormorant Garamond', serif;
-    overflow-x: hidden;
-  }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Cormorant Garamond", Garamond, Georgia, serif;
+      font-size: 21px;
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+    }
 
-  /* subtle paper grain */
-  body::before{
-    content:"";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.5;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(0,0,0,0.015) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(0,0,0,0.015) 0%, transparent 40%);
-    background-color: transparent;
-  }
-  body::after{
-    content:"";
-    position: fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:1;
-    opacity:0.035;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+    a { color: inherit; }
 
-  section{
-    position: relative;
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    padding: 8vh 6vw 5vh;
-    z-index: 2;
-  }
+    .page {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 76px 24px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
 
-  section + section{
-    border-top: 1px solid var(--rule);
-  }
+    .content {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
 
-  .page{
-    max-width: 620px;
-    width: 100%;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 1.1s ease, transform 1.1s ease;
-  }
-  .page.visible{
-    opacity: 1;
-    transform: translateY(0);
-  }
+    .welcome {
+      text-align: center;
+      min-height: 100svh;
+    }
 
-  .numeral{
-    font-family: 'Cormorant Garamond', serif;
-    font-style: normal;
-    font-weight: 600;
-    font-size: clamp(2.4rem, 5vw, 3.2rem);
-    color: var(--ink);
-    line-height: 1;
-    margin-bottom: 0.6rem;
-  }
+    .welcome .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  .caption{
-    font-style: italic;
-    font-variant: small-caps;
-    letter-spacing: 0.1em;
-    color: var(--ink-faint);
-    font-size: 1rem;
-    margin-top: -1.2rem;
-    margin-bottom: 0.4rem;
-  }
+    .hero-enso {
+      width: min(62vw, 470px);
+      aspect-ratio: 1;
+      object-fit: contain;
+      opacity: 0.9;
+      margin-bottom: -34px;
+      mix-blend-mode: multiply;
+    }
 
-  .rule{
-    width: 34px;
-    height: 1px;
-    background: var(--rule);
-    border: none;
-    margin: 0.9rem auto 0;
-  }
+    h1, h2, h3, p { margin-top: 0; }
 
-  /* navigation — the ONLY place vermilion appears besides the cover subtitle */
-  .pagenav{
-    margin-top: 2.4rem;
-    display:flex;
-    justify-content:center;
-    gap: 2.2rem;
-    font-variant: small-caps;
-    letter-spacing: 0.14em;
-    font-size: 0.82rem;
-  }
-  .pagenav a{
-    color: var(--accent);
-    text-decoration:none;
-    opacity: 0.85;
-    transition: opacity .25s ease;
-  }
-  .pagenav a:hover{ opacity: 1; }
+    h1 {
+      font-weight: 500;
+      font-size: clamp(2.7rem, 8vw, 5.7rem);
+      line-height: 0.94;
+      letter-spacing: -0.035em;
+      margin-bottom: 22px;
+    }
 
-  .manifesto-link{
-    color: var(--accent);
-    font-style: italic;
-    font-size: 0.95rem;
-    text-decoration: none;
-    border-bottom: 1px solid var(--accent);
-    padding-bottom: 2px;
-  }
+    h2 {
+      font-weight: 500;
+      font-size: clamp(2.2rem, 6vw, 4.1rem);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      margin-bottom: 38px;
+    }
 
-  .enter-btn{
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: var(--ink);
-    color: var(--paper);
-    text-decoration: none;
-    padding: 0.9rem 2rem;
-    border-radius: 999px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    letter-spacing: 0.01em;
-    transition: background .25s ease, transform .25s ease;
-  }
-  .enter-btn:hover{ background:#000; transform: translateY(-1px); }
-  .enter-btn .check{ font-size: 1rem; }
+    h3 {
+      font-size: 1.15rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: Inter, Arial, sans-serif;
+      font-weight: 500;
+      margin: 48px 0 18px;
+    }
 
-  .credit{
-    margin-top: 1.8rem;
-    font-size: 0.78rem;
-    color: var(--ink-faint);
-    letter-spacing: 0.03em;
-  }
+    .subtitle {
+      max-width: 600px;
+      font-size: clamp(1.25rem, 3vw, 1.55rem);
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
 
-  .eyebrow{
-    font-variant: small-caps;
-    letter-spacing: 0.22em;
-    font-size: 0.82rem;
-    color: var(--ink-faint);
-    margin-bottom: 1.4rem;
-  }
+    .reciprocity {
+      font-style: italic;
+      max-width: 590px;
+      margin: 0 auto 34px;
+      color: #2b2a27;
+    }
 
-  .title{
-    font-style: italic;
-    font-weight: 500;
-    font-size: clamp(1.9rem, 4.4vw, 3rem);
-    line-height: 1.22;
-    margin-bottom: 2.6rem;
-    color: var(--ink);
-  }
+    .creator {
+      margin-top: 46px;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
 
-  .enso-wrap{
-    display:flex;
-    justify-content:center;
-    margin: 0 auto 2.6rem;
-  }
+    .actions {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
 
-  .body-text{
-    font-size: clamp(1.05rem, 1.6vw, 1.28rem);
-    line-height: 1.75;
-    color: var(--ink-soft);
-    max-width: 30em;
-    margin: 0 auto 2.6rem;
-  }
+    .button {
+      display: inline-block;
+      padding: 12px 22px;
+      text-decoration: none;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--ink);
+      transition: 180ms ease;
+    }
 
-  .liturgy{
-    font-style: italic;
-    font-variant: small-caps;
-    letter-spacing: 0.06em;
-    color: var(--ink-faint);
-    font-size: 1rem;
-    line-height: 2;
-  }
+    .button.primary {
+      background: var(--ink);
+      color: var(--paper);
+    }
 
-  .qr-note{
-    margin-top: 2.2rem;
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap: 0.6rem;
-  }
-  .qr-note .link-copy{
-    cursor:pointer;
-    border-bottom: 1px solid var(--ink-faint);
-    padding-bottom: 1px;
-    background:none;
-    border-top:none; border-left:none; border-right:none;
-    font-family: inherit;
-    font-size: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-    color: inherit;
-  }
-  .qr-note .link-copy:hover{ color: var(--ink); border-color: var(--ink); }
+    .button.secondary {
+      border-color: transparent;
+      color: var(--verm);
+      position: relative;
+    }
 
-  /* COVER */
-  #cover .collection{
-    margin-top: 2.4rem;
-    font-variant: small-caps;
-    letter-spacing: 0.25em;
-    font-size: 0.85rem;
-    color: var(--ink-faint);
-  }
-  #cover .title{
-    font-size: clamp(2.4rem, 6vw, 4rem);
-    margin-bottom: 0.4rem;
-  }
-  #cover .title .accent-line{
-    color: var(--ink-soft);
-  }
-  #cover .subtitle{
-    font-style: italic;
-    font-size: clamp(1.1rem, 2vw, 1.4rem);
-    color: var(--ink-soft);
-    margin-bottom: 2.6rem;
-  }
-  /* BACK */
+    .button.secondary::after {
+      content: "";
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 8px;
+      height: 1px;
+      background: var(--verm);
+      opacity: 0.55;
+    }
 
-  footer.credits{
-    position: relative;
-    z-index: 2;
-    text-align:center;
-    padding: 3rem 0 4rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    scroll-snap-align: start;
-  }
+    .button:hover { transform: translateY(-1px); }
 
-  @media (prefers-reduced-motion: reduce){
-    .page{ transition:none; animation:none; }
-    .page{ opacity:1; transform:none; }
-  }
-</style>
+    .eyebrow {
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--verm);
+      margin-bottom: 18px;
+      font-style: italic;
+    }
+
+    .enso {
+      width: min(74vw, 520px);
+      max-height: 44vh;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 42px;
+      mix-blend-mode: multiply;
+    }
+
+    .spoken {
+      max-width: 610px;
+      margin: 0 auto;
+      font-size: clamp(1.25rem, 2.7vw, 1.5rem);
+      line-height: 1.72;
+    }
+
+    .spoken p { margin-bottom: 1.35em; }
+
+    .spoken .breath {
+      display: block;
+      height: 0.8em;
+    }
+
+    .spoken .long-breath {
+      display: block;
+      height: 1.9em;
+    }
+
+    .manifesto .content { max-width: 680px; }
+    .manifesto p { margin-bottom: 1.15em; }
+
+    .collection-intro {
+      text-align: center;
+    }
+
+    .collection-list {
+      list-style: none;
+      padding: 0;
+      margin: 42px auto 0;
+      max-width: 610px;
+      border-top: 1px solid var(--line);
+    }
+
+    .collection-list li {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .collection-list a {
+      text-decoration: none;
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 18px;
+      align-items: baseline;
+      padding: 17px 2px;
+    }
+
+    .collection-list .num {
+      font-family: Inter, Arial, sans-serif;
+      color: var(--verm);
+      font-size: 0.7rem;
+      letter-spacing: 0.09em;
+      font-style: italic;
+    }
+
+    .collection-list .title { font-size: 1.17rem; }
+
+    .next {
+      margin-top: 60px;
+      text-align: center;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .next a {
+      text-decoration: none;
+      color: var(--verm);
+    }
+
+    .equation {
+      font-family: Inter, Arial, sans-serif;
+      font-size: clamp(1.25rem, 4vw, 2rem);
+      letter-spacing: 0.015em;
+      text-align: center;
+      margin: 8px auto 56px;
+      max-width: 720px;
+    }
+
+    .missing-word {
+      display: inline-block;
+      min-width: 170px;
+      border-bottom: 1px solid var(--ink);
+      transform: translateY(-0.2em);
+    }
+
+    .final-page {
+      text-align: center;
+      min-height: 100svh;
+    }
+
+    .final-page .enso-complete {
+      width: min(70vw, 510px);
+      display: block;
+      margin: 0 auto 28px;
+      mix-blend-mode: multiply;
+    }
+
+    .seal {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--verm);
+      border-radius: 8px;
+      margin: 0 auto 36px;
+      color: var(--verm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.55rem;
+      line-height: 1.05;
+      letter-spacing: 0.03em;
+    }
+
+    .seal span:first-child {
+      border-bottom: 1px solid var(--verm);
+      padding: 0 3px 3px;
+      margin-bottom: 3px;
+      font-style: italic;
+    }
+
+    footer {
+      padding: 34px 24px 42px;
+      text-align: center;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      background: var(--paper);
+    }
+
+    .seal-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border: 1px solid var(--verm);
+      border-radius: 2px;
+      margin-right: 8px;
+      transform: translateY(1px);
+    }
+
+    @media (max-width: 640px) {
+      body { font-size: 19px; }
+      .page { padding: 58px 20px; }
+      .hero-enso { width: min(90vw, 430px); margin-bottom: -18px; }
+      .enso { width: min(92vw, 500px); max-height: none; }
+      .collection-list a { grid-template-columns: 62px 1fr; }
+      .actions { flex-direction: column; align-items: center; }
+      .button { min-width: 220px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .button { transition: none; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- COVER -->
-<section id="cover">
-  <div class="page">
-    <div class="enso-wrap" id="ensoCover"></div>
-    <div class="title" style="font-style:normal; font-weight:500; margin-bottom:1.5rem;">Insights For Your Consideration</div>
-    <p class="body-text" style="font-style:italic;">A practice of gently stretching perspective, one Insight at a time.</p>
-    <p class="body-text">The words give voice to the saxophone.<br>The saxophone gives voice to the words.</p>
-    <p class="body-text" style="margin-bottom:2.2rem;">Each piece offers an Insight&hellip;<br>and leaves space for your own Reflection.</p>
-    <div style="margin-bottom:1.4rem;"><a href="#manifesto" class="manifesto-link">Read the Manifesto</a></div>
-    <a href="#insight-1" class="enter-btn">Enter Collection One <span class="check">&#10003;</span></a>
-    <div class="credit">Created and Performed by Daniele dell'Erba &ndash; FlowSax</div>
-  </div>
-</section>
-
-<!-- MANIFESTO -->
-<section id="manifesto">
-  <div class="page">
-    <p class="body-text" style="font-style: italic; font-size: clamp(1.1rem, 1.9vw, 1.4rem); color: var(--ink);">
-      [ Manifesto placeholder — drop the full version here when it's ready. ]
-    </p>
-  </div>
-</section>
-
-<!-- INSIGHT 1 -->
-<section id="insight-1">
-  <div class="page">
-    <div class="numeral">1</div>
-    <div class="title">Start Here. Or Not.</div>
-    <div class="enso-wrap" id="enso1"></div>
-    <div class="caption">Certainty</div>
-    <p class="body-text">Certainty often feels like truth<br>because it feels familiar.<br><br>Wisdom begins when we can hold our deepest convictions wholeheartedly —<br>without letting them hold us.<br><br>Two quiet words<br>leave room for what else might be true.</p>
-    <div class="liturgy">Listen. Reflect. Continue.</div>
-    <div class="qr-note">A quiet doorway &nbsp;·&nbsp; <button class="link-copy" onclick="copyLink('insight-1', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- INSIGHT 2 -->
-<section id="insight-2">
-  <div class="page">
-    <div class="numeral">2</div>
-    <div class="title">Call It Into Being.</div>
-    <div class="enso-wrap" id="enso2"></div>
-    <div class="caption">Direction</div>
-    <p class="body-text">A name at the beginning<br>asks a different question than a name at the end:<br>not "what has this become,"<br>but "what belongs here."<br><br>It keeps the conversation centred.<br><br>Call a name into being —<br>and witness what, in turn, it calls into being.</p>
-    <div class="liturgy">Listen. Reflect. Continue.</div>
-    <div class="qr-note">A quiet doorway &nbsp;·&nbsp; <button class="link-copy" onclick="copyLink('insight-2', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- INSIGHT 3 -->
-<section id="insight-3">
-  <div class="page">
-    <div class="numeral">3</div>
-    <div class="title">Let There Be&hellip;</div>
-    <div class="enso-wrap" id="enso3"></div>
-    <div class="caption">Perception</div>
-    <p class="body-text">Darkness doesn't change the world.<br>It changes you —<br>and that changes how you meet it.<br><br>We give different names<br>to whatever helps us find our way back to the light.<br><br>Mine happens to be the practice of Flow.</p>
-    <div class="liturgy">Listen. Reflect. Continue.</div>
-    <div class="qr-note">A quiet doorway &nbsp;·&nbsp; <button class="link-copy" onclick="copyLink('insight-3', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- INSIGHT 4 -->
-<section id="insight-4">
-  <div class="page">
-    <div class="numeral">4</div>
-    <div class="title">My Cat, My Dog,<br>Chess &amp; Tetris</div>
-    <div class="enso-wrap" id="enso4"></div>
-    <div class="caption">Mode of Engagement</div>
-    <p class="body-text">My cat, Gigimo, played Chess —<br>patient, deliberate, always a few moves ahead.<br><br>My dog Norbert plays Tetris —<br>meeting what comes, guiding it, until it finds its place.<br><br>Some things can only be discovered by playing.<br><br>So before asking "What's my next move?"<br>— perhaps ask "What game am I playing?"</p>
-    <div class="liturgy">Listen. Reflect. Continue.</div>
-    <div class="qr-note">A quiet doorway &nbsp;·&nbsp; <button class="link-copy" onclick="copyLink('insight-4', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- INSIGHT 5 -->
-<section id="insight-5">
-  <div class="page">
-    <div class="numeral">5</div>
-    <div class="title">The Practice of Flow</div>
-    <div class="enso-wrap" id="enso5"></div>
-    <div class="caption">Practice</div>
-    <p class="body-text" style="font-style:italic; color: var(--ink-faint);">[ Placeholder — final text arriving this week. ]</p>
-    <div class="liturgy">Listen. Reflect. Continue.</div>
-    <div class="qr-note">A quiet doorway &nbsp;·&nbsp; <button class="link-copy" onclick="copyLink('insight-5', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- INSIGHT 6 -->
-<section id="insight-6">
-  <div class="page">
-    <div class="numeral">6</div>
-    <div class="title">We Are Not Separate</div>
-    <div class="enso-wrap" id="enso6"></div>
-    <div class="caption">Relationship</div>
-    <p class="body-text" style="font-style:italic; color: var(--ink-faint);">[ Placeholder — final text arriving this week. ]</p>
-    <div class="liturgy">Listen. Reflect. Continue.</div>
-    <div class="qr-note">A quiet doorway &nbsp;·&nbsp; <button class="link-copy" onclick="copyLink('insight-6', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- INSIGHT 7 -->
-<section id="insight-7">
-  <div class="page">
-    <div class="numeral">7</div>
-    <div class="title" style="font-style:italic; color: var(--ink-faint);">[ Insight 7 — title pending ]</div>
-    <div class="enso-wrap" id="enso7"></div>
-    <div class="caption" style="opacity:0.5;">&mdash;</div>
-    <p class="body-text" style="font-style:italic; color: var(--ink-faint);">[ Placeholder — final text arriving this week. ]</p>
-    <div class="liturgy">Listen. Reflect. Continue.</div>
-    <div class="qr-note">A quiet doorway &nbsp;·&nbsp; <button class="link-copy" onclick="copyLink('insight-7', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- REVEAL -->
-<section id="reveal">
-  <div class="page">
-    <div class="eyebrow">The Reveal</div>
-    <div class="title">The Circle Reveals Itself</div>
-    <div class="enso-wrap" id="ensoReveal"></div>
-    <p class="body-text">The whole was present before it became visible.</p>
-    <div class="liturgy"><a href="#manifesto" style="color:inherit; text-decoration:none; border-bottom:1px solid var(--ink-faint);">Back to where it began</a></div>
-    <div class="qr-note" style="margin-top:1.6rem;"><button class="link-copy" onclick="copyLink('reveal', this)">copy this page's link</button></div>
-  </div>
-</section>
-
-<!-- BACK -->
-<section id="back">
-  <div class="page">
-    <div class="enso-wrap" id="ensoBack"></div>
-    <p class="body-text" style="font-style: italic; font-size: 1.1rem; margin-bottom: 0.6rem;">The Insight is mine to offer.<br>The Reflection is yours to have.</p>
-    <hr class="rule">
-    <div class="qr-note" style="margin-top:2.4rem;">
-      <a href="#" style="color:inherit; text-decoration:none; border-bottom:1px solid var(--ink-faint);">Instagram</a>
-      &nbsp;·&nbsp;
-      <a href="#" style="color:inherit; text-decoration:none; border-bottom:1px solid var(--ink-faint);">Spotify</a>
-      &nbsp;·&nbsp;
-      <a href="#" style="color:inherit; text-decoration:none; border-bottom:1px solid var(--ink-faint);">More</a>
+  <section class="page welcome" id="home">
+    <div class="content">
+      <img class="hero-enso" src="images/enso-reveal.png" alt="Open Ensō brush circle" />
+      <h1>Insights for<br>Your Consideration</h1>
+      <p class="subtitle">A practice of gently stretching perspective, one Insight at a time.</p>
+      <p class="reciprocity">The words give voice to the saxophone.<br>The saxophone gives voice to the words.</p>
+      <p>Each piece offers an Insight…<br>and leaves space for your own Reflection.</p>
+      <div class="actions">
+        <a class="button secondary" href="#manifesto">Read the Manifesto</a>
+        <a class="button primary" href="#collection">Enter Collection One</a>
+      </div>
+      <p class="creator">Created and performed by Daniele dell’Erba — FlowSax</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer class="credits">FlowSax &nbsp;·&nbsp; Collection One &nbsp;·&nbsp; First Edition &nbsp;·&nbsp; No. 018 of 50</footer>
+  <section class="page manifesto" id="manifesto">
+    <div class="content">
+      <p class="eyebrow">Manifesto</p>
+      <h2>An Invitation</h2>
+      <p>There is no shortage of opinions.</p>
+      <p>No shortage of information.</p>
+      <p>No shortage of certainty.</p>
+      <p>This project began with a different question:</p>
+      <p><em>How might we create a small space in which people become just a little more curious than certain?</em></p>
+      <p>Not persuaded.<br>Not instructed.<br>Not corrected.</p>
+      <p>Simply invited.</p>
+      <p>Each piece is called an Insight.</p>
+      <p>Not because it is the truth.<br>Because it is one way of looking.</p>
+      <p>What follows is not something to believe.<br>It is something to consider.</p>
+      <p><em>The Insight is mine to offer.<br>The Reflection is yours to have.</em></p>
 
-<script>
-/* ---------- Enso renderer — built from one real ink painting ---------- */
-/* angle 0 = 12 o'clock, clockwise. Journey starts at 1 o'clock (30deg). */
-const START_ANGLE = 30;
-const ENSO_SRC = "enso-master.png";
+      <h3>What This Is</h3>
+      <p>Insights for Your Consideration is neither a lecture, nor spoken-word poetry, nor a concert.</p>
+      <p>It lives somewhere between them.</p>
+      <p>Each Insight is a conversation between spoken reflection, silence and saxophone.</p>
+      <p>Sometimes the words lead.<br>Sometimes the saxophone does.</p>
+      <p>Neither illustrates the other.<br>Neither accompanies the other.</p>
+      <p>Together, they point towards something neither could fully express alone.</p>
 
-function maskFor(fromDeg, toDeg){
-  // conic-gradient's 0deg is already 12 o'clock, clockwise — matches our convention
-  return `conic-gradient(from 0deg, transparent 0deg, transparent ${fromDeg}deg, black ${fromDeg}deg, black ${toDeg}deg, transparent ${toDeg}deg, transparent 360deg)`;
-}
+      <h3>Why It Exists</h3>
+      <p>We live at a time when it has never been easier to produce answers.</p>
+      <p>The harder task is creating space for better questions.</p>
+      <p>Questions slow us down.<br>Questions soften certainty.<br>Questions make curiosity possible.</p>
+      <p>This project exists to protect that space.</p>
+      <p>Not to tell people what to think.<br>To invite them to think again.</p>
 
-function makeLayer(size, opacity, maskCss){
-  const img = document.createElement("img");
-  img.src = ENSO_SRC;
-  img.alt = "";
-  img.style.position = "absolute";
-  img.style.top = "0";
-  img.style.left = "0";
-  img.style.width = size + "px";
-  img.style.height = size + "px";
-  img.style.opacity = opacity;
-  if(maskCss){
-    img.style.maskImage = maskCss;
-    img.style.webkitMaskImage = maskCss;
-  }
-  return img;
-}
+      <h3>The Nature of an Insight</h3>
+      <p>An Insight is not advice.</p>
+      <p>It is not instruction.<br>It is not an argument.</p>
+      <p>It is an offering.</p>
+      <p>The creator is responsible for the quality and integrity of the Insight.</p>
+      <p>What follows belongs to the listener.</p>
+      <p>A Reflection cannot be delivered.<br>It can only occur.</p>
+      <p><em>The Insight is offered.<br>The Reflection remains free.</em></p>
 
-/**
- * mode 'complete' - the full painted ring, exactly as painted (front cover, back cover)
- * mode 'growth'   - only the wedge from START_ANGLE to oldEnd is shown (settled, ~40% ink),
- *                    plus the wedge from oldEnd to newEnd at full ink — nothing beyond newEnd exists yet
- */
-function drawEnso(mountId, size, mode, oldEnd, newEnd){
-  const mount = document.getElementById(mountId);
-  mount.style.position = "relative";
-  mount.style.width = size + "px";
-  mount.style.height = size + "px";
+      <h3>The Invitation</h3>
+      <p>If these Insights leave you with one fewer certainty, one better question, one quieter breath, or one unexpected smile, then they have already become more than words.</p>
+      <p>They have become yours.</p>
 
-  if(mode === 'complete'){
-    mount.appendChild(makeLayer(size, 1, null));
-    return;
-  }
+      <div class="next"><a href="#collection">Enter Collection One ↓</a></div>
+    </div>
+  </section>
 
-  // growth
-  if(oldEnd > START_ANGLE){
-    mount.appendChild(makeLayer(size, 0.4, maskFor(START_ANGLE, oldEnd)));
-  }
-  mount.appendChild(makeLayer(size, 1, maskFor(oldEnd, newEnd)));
-}
+  <section class="page collection-intro" id="collection">
+    <div class="content">
+      <p class="eyebrow">Collection One</p>
+      <h2>Six Insights.<br>One Reveal.<br>One gradually widening conversation.</h2>
+      <ol class="collection-list">
+        <li><a href="#one-1"><span class="num">ONE.1</span><span class="title">Start Here. Or Not.</span></a></li>
+        <li><a href="#one-2"><span class="num">ONE.2</span><span class="title">Call It Into Being</span></a></li>
+        <li><a href="#one-3"><span class="num">ONE.3</span><span class="title">Let There Be…</span></a></li>
+        <li><a href="#one-4"><span class="num">ONE.4</span><span class="title">My Cat, My Dog, Chess &amp; Tetris</span></a></li>
+        <li><a href="#one-5"><span class="num">ONE.5</span><span class="title">Golf: The Tai Chi of Capitalists?</span></a></li>
+        <li><a href="#one-6"><span class="num">ONE.6</span><span class="title">Words</span></a></li>
+        <li><a href="#one-7"><span class="num">ONE.7</span><span class="title">The Ongoing Conversation</span></a></li>
+      </ol>
+    </div>
+  </section>
 
-/* equal 1.5hr (45deg) steps from 1:00 across all 7 insights,
-   then a final leap to the Reveal, then true closure only on the back cover */
-const A = START_ANGLE; // 30  = 1:00
-const stages = [
-  { id: "ensoCover",  size: 260, mode:'complete' },
-  { id: "enso1",      size: 180, mode:'growth', oldEnd: A,      newEnd: A+45  }, // 1:00  -> 2:30
-  { id: "enso2",      size: 180, mode:'growth', oldEnd: A+45,   newEnd: A+90  }, // 2:30  -> 4:00
-  { id: "enso3",      size: 180, mode:'growth', oldEnd: A+90,   newEnd: A+135 }, // 4:00  -> 5:30
-  { id: "enso4",      size: 180, mode:'growth', oldEnd: A+135,  newEnd: A+180 }, // 5:30  -> 7:00
-  { id: "enso5",      size: 180, mode:'growth', oldEnd: A+180,  newEnd: A+225 }, // 7:00  -> 8:30
-  { id: "enso6",      size: 180, mode:'growth', oldEnd: A+225,  newEnd: A+270 }, // 8:30  -> 10:00
-  { id: "enso7",      size: 180, mode:'growth', oldEnd: A+270,  newEnd: A+315 }, // 10:00 -> 11:30
-  { id: "ensoReveal", size: 220, mode:'growth', oldEnd: A+315,  newEnd: A+345 }, // 11:30 -> 12:30 (final leap, still a gap left)
-  { id: "ensoBack",   size: 220, mode:'complete' },
-];
-stages.forEach(s=> drawEnso(s.id, s.size, s.mode, s.oldEnd, s.newEnd));
+  <section class="page" id="one-1">
+    <div class="content">
+      <img class="enso" src="images/enso-e1.png" alt="Ensō progression for ONE.1" />
+      <p class="eyebrow">ONE.1</p>
+      <h2>Start Here. Or Not.</h2>
+      <div class="spoken">
+        <p>We tell ourselves…<br>we’re in pursuit of understanding.</p>
+        <p>Yet often…<br>we settle for the <em>illusion of certainty.</em></p>
+        <p>Certainty about what’s happening.<br>About what’s going to happen.<br>Above all…<br>about who we are.</p>
+        <p>Along the way…<br>our beliefs begin to take hold…<br>of our identity.</p>
+        <p>But what if…<br><em>certainty is familiarity mistaken for truth?</em></p>
+        <p>What if strength…<br>is holding an idea…<br><em>without letting it hold you?</em></p>
+        <span class="long-breath"></span>
+        <p>Now…<br>imagine expressing one of your deepest convictions.</p>
+        <p>Clearly.<br>Articulately.<br>Unapologetically.</p>
+        <p><em>Hold it with all your heart.</em></p>
+        <span class="long-breath"></span>
+        <p>Then…<br>leave just enough room…<br>for a heartbeat of doubt.</p>
+        <p>Two quiet words…<br>that almost smile back at us.</p>
+        <p><em>“…or not.”</em></p>
+        <p>A gentle invitation…<br>to leave room…<br><em>for what else might be true.</em></p>
+        <p>Those two little words…<br>make space…<br>for two bigger ones.</p>
+        <p><em>Humility.</em></p>
+        <p><em>And courage.</em></p>
+        <p>The humility to accept…<br>that you might be wrong.</p>
+        <p>The courage…<br>to keep exploring…<br><em>beyond what feels familiar.</em></p>
+        <span class="long-breath"></span>
+        <p>After all…<br>we’ve all been certain about things…<br>that later made less sense…<br>than they once did.</p>
+        <p>So the next time you find yourself saying…<br>“This is how the world works.”</p>
+        <p>Consider…<br>adding two quiet words.</p>
+        <p><em>“…or not.”</em></p>
+        <p>That’s all it takes…<br>to soften the edges…<br>of your convictions.</p>
+        <p>So that new meaning…<br><em>may begin to emerge.</em></p>
+        <span class="long-breath"></span>
+        <p><em>…or not.</em></p>
+      </div>
+      <div class="next"><a href="#one-2">Next Insight →</a></div>
+    </div>
+  </section>
 
-/* ---------- scroll reveal ---------- */
-const pages = document.querySelectorAll(".page");
+  <section class="page" id="one-2">
+    <div class="content">
+      <img class="enso" src="images/enso-e2.png" alt="Ensō progression for ONE.2" />
+      <p class="eyebrow">ONE.2</p>
+      <h2>Call It Into Being</h2>
+      <div class="spoken">
+        <p>Most people think…<br>a name…<br>comes at the end.</p>
+        <p>Once…<br>a creation…<br>has taken shape.</p>
+        <p>Almost…<br>as an afterthought.</p>
+        <p>Mmmh…<br>“What shall I call it now?”</p>
+        <p>As though…<br>the name simply captures…<br>whatever…<br>it became.</p>
+        <p>I’d like you to consider…<br><em>the opposite.</em></p>
+        <p>When…<br>an intuition…<br>begins…<br>to take shape…</p>
+        <p><em>Pause.</em></p>
+        <p><em>Listen.</em></p>
+        <p>Until…<br>one name…<br>begins…<br>to feel like…<br><em>its centre of gravity.</em></p>
+        <p>A place…<br>from which…<br>to start…<br>the conversation…<br>and give it…<br>a sense…<br><em>of direction.</em></p>
+        <span class="long-breath"></span>
+        <p>A name…<br>at the end…<br>answers…<br>a question.</p>
+        <p><em>“What has this become?”</em></p>
+        <p>At the beginning…<br>it asks…<br>another.</p>
+        <p><em>“What belongs here?”</em></p>
+        <p>It keeps…<br>the conversation…<br><em>centred.</em></p>
+        <p>Everything else…<br>can find…<br>its place…<br>around it.</p>
+        <p>From there…<br>an emerging intuition…<br>calls itself…<br><em>into being.</em></p>
+        <p><em>An Insight…<br>…for Your Consideration.</em></p>
+        <span class="long-breath"></span>
+        <p>We live…<br>at a time…<br>when the gap…<br>between…<br>possibility…<br>and reality…<br>has never been…<br>easier…<br>to bridge.</p>
+        <p>And when…<br>every new possibility…<br>invites…<br>another.</p>
+        <p>It’s never been…<br>easier…<br>to take…<br>a new path.</p>
+        <p>Or harder…<br>to stay…<br><em>on course.</em></p>
+        <p>Perhaps…<br>that’s why…<br><em>where we begin…</em><br>matters…<br>more than ever.</p>
+        <span class="long-breath"></span>
+        <p><em>Call…<br>a name…<br>into being.</em></p>
+        <p>And witness…<br>what, in turn…<br><em>IT…</em><br>calls…<br>into being.</p>
+        <p><em>…or not.</em></p>
+      </div>
+      <div class="next"><a href="#one-3">Next Insight →</a></div>
+    </div>
+  </section>
 
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.classList.add("visible");
-    }
-  });
-}, { threshold: 0.35 });
+  <section class="page" id="one-3">
+    <div class="content">
+      <img class="enso" src="images/enso-e3.png" alt="Ensō progression for ONE.3" />
+      <p class="eyebrow">ONE.3</p>
+      <h2>Let There Be…</h2>
+      <div class="spoken">
+        <p><em>Darkness.</em></p>
+        <p>When darkness comes…<br><em>Be still.</em></p>
+        <p>Just for a moment.</p>
+        <p><em>Breathe.</em></p>
+        <p>Let your eyes adjust.</p>
+        <p>Darkness changes everything…<br><em>without changing anything.</em></p>
+        <p>It asks something different of us.</p>
+        <p>When sight falls away…<br>so do many of the choices it offers.</p>
+        <p>Not because there is less around you…<br>but because there is less…<br><em>pulling you away from yourself.</em></p>
+        <p>Something deeper…<br>comes into view.</p>
+        <p>Just like dancing blindfolded.</p>
+        <p>You don’t have to stop moving.<br><em>You move differently.</em></p>
+        <p>More quietly.<br>More intentionally.</p>
+        <p>When your eyes can no longer lead…<br>the rest of you…<br><em>begins to.</em></p>
+        <p>Darkness doesn’t change the world.<br><em>It changes you.</em></p>
+        <p>And that changes…<br>how you meet it.</p>
+        <p>Perhaps darkness…<br>is not something to overcome.</p>
+        <p>It is simply…<br><em>the absence of light.</em></p>
+        <p>So rather than fight the darkness…<br>find your way back…<br><em>to the light.</em></p>
+        <p>And suddenly…<br><em>darkness has nowhere to hide.</em></p>
+        <p>We’ve given different names…<br>to whatever helps us…<br>find our way again.</p>
+        <p>Truth.<br>Love.<br>Faith.<br>Awareness.</p>
+        <p>Different words…<br>pointing in the same direction.</p>
+        <p>The word matters less…<br><em>than the practice.</em></p>
+        <p>Mine happens to be…<br><em>the practice of Flow…</em><br>which allows me…<br>to meet the world…<br>a little more harmoniously.</p>
+        <p><em>Do you have one?</em></p>
+        <span class="long-breath"></span>
+        <p><em>A thought.</em><br><em>A breath.</em><br><em>A movement.</em><br><em>A note.</em></p>
+        <span class="long-breath"></span>
+        <p>When darkness comes…<br><em>Be still.</em></p>
+        <p>Just for a moment.</p>
+        <p><em>Breathe.</em></p>
+        <p><em>Smile.</em></p>
+        <p>Because you can hide everything…<br>in darkness…<br><em>except light itself.</em></p>
+        <span class="long-breath"></span>
+        <p><em>Let there be light.</em></p>
+        <p>…and the reflection…<br>it brings.</p>
+        <p><em>…or not.</em></p>
+      </div>
+      <div class="next"><a href="#one-4">Next Insight →</a></div>
+    </div>
+  </section>
 
-pages.forEach(p=>io.observe(p));
+  <section class="page" id="one-4">
+    <div class="content">
+      <img class="enso" src="images/enso-e4.png" alt="Ensō progression for ONE.4" />
+      <p class="eyebrow">ONE.4</p>
+      <h2>My Cat, My Dog,<br>Chess &amp; Tetris</h2>
+      <div class="spoken">
+        <p>Think ahead.</p>
+        <p>Plan carefully.</p>
+        <p>Anticipate…<br>what may follow.</p>
+        <p>There are moments…<br>when that is exactly…<br>what life…<br><em>asks of us.</em></p>
+        <p>My cat…<br>Gigimo…<br>played Chess.</p>
+        <p>Patient.<br>Deliberate.<br>Always…<br><em>a few moves ahead.</em></p>
+        <p>Then there’s…<br>Norbert.</p>
+        <p>Norbert…<br>plays Tetris.</p>
+        <p>When life…<br>brings him…<br><em>something new…</em></p>
+        <p>he doesn’t worry…<br>too much…<br><em>about what comes next.</em></p>
+        <p>He meets it.<br>He guides it.</p>
+        <p>He almost…<br>dances with it…<br>until it finds…<br>its place.</p>
+        <p>We naturally admire…<br>the elegance…<br><em>of Chess.</em></p>
+        <p>Yet…<br>there is…<br><em>another way.</em></p>
+        <p>A more fluid way…<br>of discovering…<br><em>what is possible.</em></p>
+        <p>Some things…<br>can only be discovered…<br><em>by playing.</em></p>
+        <span class="long-breath"></span>
+        <p>So before asking…<br>“What’s…<br><em>my next move?</em>”</p>
+        <p>perhaps ask…<br>“What game…<br><em>am I playing?</em>”</p>
+        <p><em>…or not.</em></p>
+      </div>
+      <div class="next"><a href="#one-5">Next Insight →</a></div>
+    </div>
+  </section>
 
-/* ---------- prev / next navigation (vermilion, minimal) ---------- */
-const pageOrder = ["cover","manifesto","insight-1","insight-2","insight-3","insight-4","insight-5","insight-6","insight-7","reveal","back"];
-const pageLabels = { cover:"Cover", manifesto:"Manifesto", "insight-1":"1", "insight-2":"2", "insight-3":"3", "insight-4":"4", "insight-5":"5", "insight-6":"6", "insight-7":"7", reveal:"The Reveal", back:"Back Cover" };
+  <section class="page" id="one-5">
+    <div class="content">
+      <img class="enso" src="images/enso-e5.png" alt="Ensō progression for ONE.5" />
+      <p class="eyebrow">ONE.5</p>
+      <h2>Golf:<br>The Tai Chi of Capitalists?</h2>
+      <div class="spoken">
+        <p>With your feet…<br>firmly planted on the ground…<br>you look down…<br>at the ball.</p>
+        <p>Then out…<br>towards where you want it to go.</p>
+        <p>Then back down…<br>to the ball.</p>
+        <p>And suddenly…<br>the distance between them…<br>hits you.</p>
+        <p>You tighten your grip…<br>ready to strike.</p>
+        <p>And yet…<br>the tighter you hold…<br>the more force you apply…<br>the more your swing…<br>loses its flow.</p>
+        <span class="long-breath"></span>
+        <p>You want your shot…<br>to travel farther.</p>
+        <p>Not because…<br>you hit it harder…<br>but because strength…<br>finds its rhythm…<br>and control…<br>learns to let go.</p>
+        <span class="long-breath"></span>
+        <p>Perhaps…<br>that same insight…<br>echoes…<br><em>(echoes…)</em><br>beyond the golf course.</p>
+        <p>We put so much effort<br>into bringing things into being…<br>pushing…<br>rushing…<br>powering through…</p>
+        <p>that eventually…<br>we search for somewhere<br>to slow down…<br>to breathe…<br>simply to be.</p>
+        <p>As though being and doing<br>belonged to different worlds.</p>
+        <p>Taoist philosophy…<br>brings them together.</p>
+        <p>Rooted like a tree…<br>yet dancing like its branches<br>in the wind.</p>
+        <p>Planning and playing.<br>Being and doing.</p>
+        <p>Different movements…<br>of the same dance.</p>
+        <p>And when those movements…<br>find harmony…<br>what emerges…<br>is called <em>WU-WEI.</em></p>
+        <p>Acting…<br>without forcing.</p>
+        <p><em>Effortless action.</em></p>
+        <span class="long-breath"></span>
+        <p>So whether you are<br>playing golf…<br>playing music…<br>or calling a new idea<br>into being…</p>
+        <p><em>breathe.</em></p>
+        <p><em>And swing.</em></p>
+        <p>WU-WEI…<br>all the way.</p>
+        <p><em>…or not.</em></p>
+      </div>
+      <div class="next"><a href="#one-6">Next Insight →</a></div>
+    </div>
+  </section>
 
-pageOrder.forEach((id, i)=>{
-  const section = document.getElementById(id);
-  if(!section) return;
-  const pageDiv = section.querySelector(".page");
-  if(!pageDiv) return;
-  if(id === "cover") return; // cover has its own explicit buttons instead
+  <section class="page" id="one-6">
+    <div class="content">
+      <img class="enso" src="images/enso-e6.png" alt="Ensō progression for ONE.6" />
+      <p class="eyebrow">ONE.6</p>
+      <h2>Words</h2>
+      <div class="spoken">
+        <p>Every…<br>word…<br>matters.</p>
+        <p>Yet…<br>one word…<br>on its own…<br>says very little.</p>
+        <p>It…<br>awaits…<br>to be met.</p>
+        <span class="breath"></span>
+        <p>One word…<br>invites another.</p>
+        <p>One note…<br>makes space…<br>for the next.</p>
+        <p>A question…<br>invites an answer.</p>
+        <p>An answer…<br>invites the next question.</p>
+        <span class="long-breath"></span>
+        <p><em>Why?</em></p>
+        <p>Perhaps…<br>the universe…<br>is…<br>in conversation…<br>with itself.</p>
+        <p>Word by word.<br>Note by note.<br>Insight by Insight.</p>
+        <p>Making space…<br>for the universe…<br>to grow…<br>just a little more…<br>aware…<br>of what…<br>it is becoming.</p>
+        <p>Perhaps…<br>that’s why…<br>every word…<br>every voice…<br>matters.</p>
+        <p>Mine.<br>Yours.</p>
+        <span class="long-breath"></span>
+        <p>And with that…<br>my Insight…<br>is complete.</p>
+        <p><em>Space.</em></p>
+        <p>For your Reflection…<br>to…<br>unfold.</p>
+        <p>So let…<br>that…<br>be…<br>my last…<br><em>word.</em></p>
+        <p>…</p>
+        <p><em>Or not.</em></p>
+      </div>
+      <div class="next"><a href="#one-7">Enter the Reveal →</a></div>
+    </div>
+  </section>
 
-  const nav = document.createElement("div");
-  nav.className = "pagenav";
+  <section class="page" id="one-7">
+    <div class="content">
+      <img class="enso" src="images/enso-reveal.png" alt="Ensō for ONE.7, the Reveal" />
+      <p class="eyebrow">ONE.7</p>
+      <h2>The Ongoing Conversation</h2>
+      <p class="equation">1 + 2 + 3 + 4 + 5 + 6 = 7 = ONE</p>
+      <div class="spoken">
+        <p>Doesn’t make much sense…<br>does it?</p>
+        <p>Until…<br>you stop counting…<br>and start noticing.</p>
+        <p>What appeared…<br>to be six separate Insights…<br>was quietly…<br>revealing itself…<br>as one…<br><em>Conversation.</em></p>
+        <span class="long-breath"></span>
+        <p>Certainty…<br>and possibility.</p>
+        <p>Darkness…<br>and light.</p>
+        <p>Chess…<br>and Tetris.</p>
+        <p>Strength…<br>and rhythm.</p>
+        <p>Conversation…<br>and awareness.</p>
+        <p>None…<br>stood alone.</p>
+        <p>Each Insight…<br>invited…<br>a Reflection.</p>
+        <p>Each Reflection…<br>prepared…<br>the next.</p>
+        <span class="long-breath"></span>
+        <p>Without adding…<br>anything more.</p>
+        <p>Only…<br>a gentle…<br>final…<br>stretch…<br>in perspective…<br>to see…<br>how it all…<br>belongs together.</p>
+        <p>Now…<br>fully…<br>called…<br>into being.</p>
+        <p>Its name…</p>
+        <p><em>Collection One.</em></p>
+        <span class="long-breath"></span>
+        <p>This conversation…<br>began…<br>with…<br><em>“Start Here.”</em></p>
+        <p>And has now…<br>come…<br>full circle…<br>to reach…<br>its natural<br><span class="missing-word" aria-label="an intentional missing word"></span></p>
+        <span class="long-breath"></span>
+        <p><em>Or not.</em></p>
+      </div>
+      <div class="next"><a href="#complete">Complete the Circle ↓</a></div>
+    </div>
+  </section>
 
-  const prevId = pageOrder[i-1];
-  const nextId = pageOrder[i+1];
+  <section class="page final-page" id="complete">
+    <div class="content">
+      <img class="enso-complete" src="images/enso-complete.png" alt="Complete Ensō" />
+      <div class="seal" aria-label="Collection One, seventh piece">
+        <span>ONE</span>
+        <span>7</span>
+      </div>
+      <p class="reciprocity">The words give voice to the saxophone.<br>The saxophone gives voice to the words.</p>
+      <p><a href="#home">Begin again… or not.</a></p>
+    </div>
+  </section>
 
-  if(prevId){
-    const a = document.createElement("a");
-    a.href = "#"+prevId;
-    a.textContent = "‹ " + pageLabels[prevId];
-    nav.appendChild(a);
-  }
-  if(nextId){
-    const a = document.createElement("a");
-    a.href = "#"+nextId;
-    a.textContent = pageLabels[nextId] + " ›";
-    nav.appendChild(a);
-  }
-  pageDiv.appendChild(nav);
-});
+  <footer>
+    <span class="seal-dot" aria-hidden="true"></span>Daniele dell’Erba / FlowSax
+  </footer>
 
-
-/* ---------- copy deep link ---------- */
-function copyLink(id, btn){
-  const url = window.location.origin + window.location.pathname + "#" + id;
-  navigator.clipboard.writeText(url).then(()=>{
-    const original = btn.textContent;
-    btn.textContent = "link copied";
-    setTimeout(()=> btn.textContent = original, 1600);
-  }).catch(()=>{
-    btn.textContent = url;
-  });
-}
-</script>
 </body>
 </html>
