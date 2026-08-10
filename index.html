@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -112,6 +111,50 @@
       max-width: 590px;
       margin: 0 auto 34px;
       color: #2b2a27;
+    }
+
+    /* Homepage audio invitation */
+    .reciprocity-audio {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      font-style: italic;
+      line-height: inherit;
+      color: #2b2a27;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .reciprocity-audio:hover .reciprocity-copy,
+    .reciprocity-audio:focus-visible .reciprocity-copy {
+      color: var(--ink);
+    }
+
+    .reciprocity-audio:focus-visible {
+      outline: 1px solid var(--verm);
+      outline-offset: 8px;
+      border-radius: 4px;
+    }
+
+    .audio-note {
+      display: inline-block;
+      margin-left: 0.35em;
+      color: var(--verm);
+      font-family: Georgia, serif;
+      font-size: 0.95em;
+      font-style: normal;
+      transform: translateY(-0.04em);
+      transition: transform 160ms ease, opacity 160ms ease;
+    }
+
+    .reciprocity-audio:hover .audio-note {
+      transform: translateY(-0.08em) scale(1.08);
+    }
+
+    .reciprocity-audio.is-playing .audio-note {
+      opacity: 0.62;
     }
 
     .cover-invitation {
@@ -320,7 +363,6 @@
       font-style: italic;
     }
 
-
     .contact-invitation {
       margin: 8px auto 18px;
       max-width: 520px;
@@ -435,7 +477,7 @@
       html { scroll-behavior: auto; }
       .button { transition: none; }
     }
-  </style>
+</style>
 </head>
 <body>
 <section class="page welcome" id="home">
@@ -443,7 +485,15 @@
 <img alt="Open Ensō brush circle" class="hero-enso" src="images/enso-reveal.png"/>
 <h1>Insights for<br/>Your Consideration</h1>
 <p class="subtitle">A practice of gently stretching perspective, one Insight at a time.</p>
-<p class="reciprocity">The words give voice to the saxophone.<br/>The saxophone gives voice to the words.</p>
+
+<button aria-label="Play the welcome audio" class="reciprocity reciprocity-audio" id="welcome-audio-trigger" type="button">
+  <span class="reciprocity-copy">The words give voice to the saxophone.<br/>The saxophone gives voice to the words.</span>
+  <span aria-hidden="true" class="audio-note">♪</span>
+</button>
+<audio id="welcome-audio" preload="none">
+  <source src="audio/welcome.mp3" type="audio/mpeg"/>
+</audio>
+
 <p class="cover-invitation">Each piece offers an Insight and leaves space for your own Reflection.</p>
 
 <div class="actions">
@@ -453,6 +503,7 @@
 <p class="creator"><span class="creator-label">Created and performed by</span><span class="creator-name">Daniele dell’Erba · FlowSax</span></p>
 </div>
 </section>
+
 <section class="page manifesto" id="manifesto">
 <div class="content">
 <p class="eyebrow">Manifesto</p>
@@ -469,14 +520,16 @@
 <p>Not because it is the truth.</p>
 <p>Because it is one way of looking.</p>
 <p>Something offered for consideration.</p>
-<p><em>The Insight is mine to offer.<br/>The Reflection is yours to create.</em></p>
+<p><em>The Insight begins with me.<br/>The Reflection continues with you.</em></p>
 <p>And should you choose to share it,<br/><em>the conversation continues.</em></p>
+
 <h3>What This Is</h3>
 <p><em>Insights for Your Consideration</em> is neither a lecture, nor spoken-word poetry, nor a concert.</p>
 <p>It lives somewhere between them.</p>
 <p>Each Insight is a conversation between spoken word, music, saxophone and silence.</p>
 <p>Each creates space for the next.</p>
 <p>Together, they give form to something no single voice could fully express alone.</p>
+
 <h3>Why It Exists</h3>
 <p>We live at a time when it has never been easier to receive information, form an opinion and arrive at an answer.</p>
 <p>What can be harder is finding enough space to pause.</p>
@@ -487,6 +540,7 @@
 <p>But to gently stretch perspective.</p>
 <p>To let different ways of seeing sit beside one another.</p>
 <p>To make room for something else to emerge.</p>
+
 <h3>The Nature of an Insight</h3>
 <p>An Insight is not advice.</p>
 <p>It is not instruction.<br/>It is not an argument.</p>
@@ -495,6 +549,7 @@
 <p>What follows cannot be delivered or controlled.</p>
 <p>It can only arise within the listener.</p>
 <p>That distinction sits at the heart of the project.</p>
+
 <h3>An Ongoing Conversation</h3>
 <p>Every Insight begins with an intuition.</p>
 <p>Through conversation, that intuition gradually finds its form.</p>
@@ -505,6 +560,7 @@
 <p>Nothing stands entirely alone.</p>
 <p>Each part becomes itself through its relationship with the others.</p>
 <p>And every performance remains incomplete until someone listens.</p>
+
 <h3>The Invitation</h3>
 <p>Perhaps one of these Insights leaves you with one fewer certainty.</p>
 <p>Perhaps it offers another point of view.</p>
@@ -519,10 +575,10 @@
 <div class="next"><a href="#collection">Enter Collection One ↓</a></div>
 </div>
 </section>
+
 <section class="page collection-intro" id="collection">
 <div class="content">
 <p class="eyebrow">Collection One</p>
-
 <ol class="collection-list">
 <li><a href="#one-1"><span class="num">ONE.1</span><span class="title">Start Here. Or Not.</span></a></li>
 <li><a href="#one-2"><span class="num">ONE.2</span><span class="title">Call It Into Being</span></a></li>
@@ -534,6 +590,7 @@
 </ol>
 </div>
 </section>
+
 <section class="page" id="one-1">
 <div class="content">
 <img alt="Ensō progression for ONE.1" class="enso" src="images/enso-e1.png"/>
@@ -573,6 +630,7 @@
 <div class="next"><a href="#one-2">Next Insight →</a></div>
 </div>
 </section>
+
 <section class="page" id="one-2">
 <div class="content">
 <img alt="Ensō progression for ONE.2" class="enso" src="images/enso-e2.png"/>
@@ -613,6 +671,7 @@
 <div class="next"><a href="#one-3">Next Insight →</a></div>
 </div>
 </section>
+
 <section class="page" id="one-3">
 <div class="content">
 <img alt="Ensō progression for ONE.3" class="enso" src="images/enso-e3.png"/>
@@ -653,6 +712,7 @@
 <div class="next"><a href="#one-4">Next Insight →</a></div>
 </div>
 </section>
+
 <section class="page" id="one-4">
 <div class="content">
 <img alt="Ensō progression for ONE.4" class="enso" src="images/enso-e4.png"/>
@@ -683,6 +743,7 @@
 <div class="next"><a href="#one-5">Next Insight →</a></div>
 </div>
 </section>
+
 <section class="page" id="one-5">
 <div class="content">
 <img alt="Ensō progression for ONE.5" class="enso" src="images/enso-e5.png"/>
@@ -720,6 +781,7 @@
 <div class="next"><a href="#one-6">Next Insight →</a></div>
 </div>
 </section>
+
 <section class="page" id="one-6">
 <div class="content">
 <img alt="Ensō progression for ONE.6" class="enso" src="images/enso-e6.png"/>
@@ -752,13 +814,14 @@
 <div class="next"><a href="#one-7">Enter the Reveal →</a></div>
 </div>
 </section>
+
 <section class="page" id="one-7">
 <div class="content">
 <img alt="Ensō for ONE.7, the Reveal" class="enso" src="images/enso-reveal.png"/>
 <p class="eyebrow">ONE.7</p>
 <h2>SUM + ARISE</h2>
-
-<div class="spoken"><p>1 + 2 + 3 + 4 + 5 + 6 = 7 = <em>ONE</em></p>
+<div class="spoken">
+<p>1 + 2 + 3 + 4 + 5 + 6 = 7 = <em>ONE</em></p>
 <p>Doesn’t make much sense,<br/>does it?</p>
 <p>Until<br/>you stop counting<br/>and start noticing.</p>
 <p>What appeared<br/>to be six separate Insights<br/>was quietly<br/>revealing itself<br/>as one<br/><em>Conversation.</em></p>
@@ -786,6 +849,7 @@
 <div class="next"><a href="#complete">Complete the Circle ↓</a></div>
 </div>
 </section>
+
 <section class="page final-page" id="complete">
 <div class="content">
 <img alt="Complete Ensō" class="enso-complete" src="images/enso-complete-final.png"/>
@@ -793,8 +857,6 @@
 <span>ONE</span>
 <span>N</span>
 </div>
-
-
 <p class="contact-invitation">To share your Reflection, or simply get in touch…</p>
 <p><a class="contact-link" href="#contact" id="contact-trigger">Click here. <em>Or not.</em></a></p>
 <p class="creator"><span class="creator-label">Created and performed by</span><span class="creator-name">Daniele dell’Erba · FlowSax</span></p>
@@ -817,6 +879,30 @@
 </div>
 
 <script>
+  const welcomeAudioTrigger = document.getElementById('welcome-audio-trigger');
+  const welcomeAudio = document.getElementById('welcome-audio');
+
+  welcomeAudioTrigger.addEventListener('click', async () => {
+    if (welcomeAudio.paused) {
+      try {
+        await welcomeAudio.play();
+        welcomeAudioTrigger.classList.add('is-playing');
+        welcomeAudioTrigger.setAttribute('aria-label', 'Pause the welcome audio');
+      } catch {
+        /* The audio file may not have been uploaded yet. */
+      }
+    } else {
+      welcomeAudio.pause();
+      welcomeAudioTrigger.classList.remove('is-playing');
+      welcomeAudioTrigger.setAttribute('aria-label', 'Play the welcome audio');
+    }
+  });
+
+  welcomeAudio.addEventListener('ended', () => {
+    welcomeAudioTrigger.classList.remove('is-playing');
+    welcomeAudioTrigger.setAttribute('aria-label', 'Play the welcome audio');
+  });
+
   const contactTrigger = document.getElementById('contact-trigger');
   const contactModal = document.getElementById('contact-modal');
   const contactClose = document.getElementById('contact-close');
