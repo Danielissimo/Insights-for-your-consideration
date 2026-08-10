@@ -477,6 +477,22 @@
       html { scroll-behavior: auto; }
       .button { transition: none; }
     }
+
+    .reciprocity-player { display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .reciprocity-line { display:block; }
+    .audio-control {
+      appearance:none; border:0; background:transparent; color:var(--verm);
+      min-width:112px; min-height:44px; padding:8px 14px; border-radius:999px;
+      display:inline-flex; align-items:center; justify-content:center; gap:7px;
+      cursor:pointer; font-family:Inter,Arial,sans-serif; font-size:.68rem;
+      font-style:normal; font-weight:500; letter-spacing:.05em; line-height:1;
+      transition:background 160ms ease,transform 160ms ease;
+    }
+    .audio-control:hover { background:rgba(166,43,32,.07); }
+    .audio-control:active { transform:scale(.98); }
+    .audio-control:focus-visible { outline:1px solid var(--verm); outline-offset:3px; }
+    .audio-control-icon { font-family:Georgia,serif; font-size:1rem; line-height:1; }
+
 </style>
 </head>
 <body>
@@ -486,10 +502,14 @@
 <h1>Insights for<br/>Your Consideration</h1>
 <p class="subtitle">A practice of gently stretching perspective, one Insight at a time.</p>
 
-<button aria-label="Play the welcome audio" class="reciprocity reciprocity-audio" id="welcome-audio-trigger" type="button">
-  <span class="reciprocity-copy">The words give voice to the saxophone.<br/>The saxophone gives voice to the words.</span>
-  <span aria-hidden="true" class="audio-note">♪</span>
-</button>
+<div class="reciprocity reciprocity-player">
+  <span class="reciprocity-line">The words give voice to the saxophone.</span>
+  <button aria-label="Listen to the welcome audio" class="audio-control" id="welcome-audio-trigger" type="button">
+    <span aria-hidden="true" class="audio-control-icon">♪</span>
+    <span class="audio-control-label">Listen</span>
+  </button>
+  <span class="reciprocity-line">The saxophone gives voice to the words.</span>
+</div>
 <audio id="welcome-audio" preload="none">
   <source src="Welcome.wav" type="audio/wav"/>
 </audio>
@@ -881,26 +901,47 @@
 <script>
   const welcomeAudioTrigger = document.getElementById('welcome-audio-trigger');
   const welcomeAudio = document.getElementById('welcome-audio');
+  const welcomeAudioIcon = welcomeAudioTrigger.querySelector('.audio-control-icon');
+  const welcomeAudioLabel = welcomeAudioTrigger.querySelector('.audio-control-label');
+  let welcomeAudioHasStarted = false;
 
-  welcomeAudioTrigger.addEventListener('click', async () => {
+  function setWelcomeAudioControl(state) {
+    if (state === 'playing') {
+      welcomeAudioIcon.textContent = 'Ⅱ';
+      welcomeAudioLabel.textContent = 'Pause';
+      welcomeAudioTrigger.setAttribute('aria-label', 'Pause the welcome audio');
+    } else if (state === 'paused' && welcomeAudioHasStarted && welcomeAudio.currentTime > 0) {
+      welcomeAudioIcon.textContent = '▶';
+      welcomeAudioLabel.textContent = 'Continue';
+      welcomeAudioTrigger.setAttribute('aria-label', 'Continue the welcome audio');
+    } else {
+      welcomeAudioIcon.textContent = '♪';
+      welcomeAudioLabel.textContent = 'Listen';
+      welcomeAudioTrigger.setAttribute('aria-label', 'Listen to the welcome audio');
+    }
+  }
+
+  welcomeAudioTrigger.addEventListener('click', () => {
     if (welcomeAudio.paused) {
-      try {
-        await welcomeAudio.play();
-        welcomeAudioTrigger.classList.add('is-playing');
-        welcomeAudioTrigger.setAttribute('aria-label', 'Pause the welcome audio');
-      } catch {
-        /* The audio file may not have been uploaded yet. */
-      }
+      welcomeAudioHasStarted = true;
+      welcomeAudio.play().then(() => setWelcomeAudioControl('playing')).catch((error) => {
+        console.error('Welcome audio could not play:', error);
+        setWelcomeAudioControl('ready');
+      });
     } else {
       welcomeAudio.pause();
-      welcomeAudioTrigger.classList.remove('is-playing');
-      welcomeAudioTrigger.setAttribute('aria-label', 'Play the welcome audio');
+      setWelcomeAudioControl('paused');
     }
   });
 
+  welcomeAudio.addEventListener('play', () => setWelcomeAudioControl('playing'));
+  welcomeAudio.addEventListener('pause', () => {
+    if (!welcomeAudio.ended) setWelcomeAudioControl('paused');
+  });
   welcomeAudio.addEventListener('ended', () => {
-    welcomeAudioTrigger.classList.remove('is-playing');
-    welcomeAudioTrigger.setAttribute('aria-label', 'Play the welcome audio');
+    welcomeAudioHasStarted = false;
+    welcomeAudio.currentTime = 0;
+    setWelcomeAudioControl('ready');
   });
 
   const contactTrigger = document.getElementById('contact-trigger');
