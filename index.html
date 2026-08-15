@@ -464,6 +464,35 @@
       color: var(--muted);
     }
 
+
+    /* Collection One orientation overlay */
+    .entry-overlay {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      padding: 24px; background: rgba(23,23,23,.28); backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px); z-index: 1200; opacity: 0; transition: opacity 260ms ease;
+    }
+    .entry-overlay.is-open { display:flex; opacity:1; }
+    .entry-card {
+      width:min(100%,570px); max-height:min(86svh,760px); overflow-y:auto;
+      background:rgba(255,255,255,.98); border:1px solid rgba(23,23,23,.10);
+      box-shadow:0 24px 80px rgba(0,0,0,.14); padding:52px 52px 46px;
+      position:relative; text-align:center; transform:translateY(8px); transition:transform 260ms ease;
+    }
+    .entry-overlay.is-open .entry-card { transform:translateY(0); }
+    .entry-eyebrow { margin:0 0 24px; color:var(--verm); font-family:Inter,Arial,sans-serif; font-size:.64rem; font-style:italic; letter-spacing:.13em; text-transform:uppercase; }
+    .entry-copy { max-width:430px; margin:0 auto; font-size:clamp(1.08rem,2.4vw,1.28rem); line-height:1.58; }
+    .entry-copy p { margin-bottom:1.05em; }
+    .entry-copy .entry-list { line-height:1.5; margin-bottom:1.25em; }
+    .entry-copy .entry-key { font-weight:600; }
+    .entry-copy .entry-signature { font-style:italic; }
+    .brush-close { appearance:none; border:0; background:transparent; position:absolute; top:17px; right:18px; width:38px; height:38px; padding:7px; cursor:pointer; border-radius:50%; }
+    .brush-close::before,.brush-close::after { content:''; position:absolute; left:8px; top:18px; width:23px; height:2.5px; background:var(--verm); border-radius:70% 35% 60% 40%; transform-origin:center; opacity:.9; }
+    .brush-close::before { transform:rotate(44deg) scaleX(1.02); }
+    .brush-close::after { transform:rotate(-48deg) scaleX(.94); top:17px; }
+    .brush-close:hover::before,.brush-close:hover::after { opacity:1; }
+    .brush-close:focus-visible { outline:1px solid var(--verm); outline-offset:3px; }
+    body.entry-overlay-open { overflow:hidden; }
+
     @media (max-width: 640px) {
       body { font-size: 19px; }
       .page { padding: 58px 20px; }
@@ -472,6 +501,8 @@
       .collection-list a { grid-template-columns: 62px 1fr; }
       .actions { flex-direction: column; align-items: center; }
       .button { min-width: 220px; }
+      .entry-card { padding: 48px 27px 38px; max-height: 88svh; }
+      .entry-copy { font-size: 1.08rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -516,7 +547,7 @@
 <p class="cover-invitation">Each piece offers an Insight and leaves space for your own Reflection.</p>
 <div class="actions">
 <a class="button secondary" href="#manifesto">Read the Manifesto</a>
-<a class="button primary" href="#collection">Enter Collection One</a>
+<a class="button primary collection-entry-trigger" href="#collection">Enter Collection One</a>
 </div>
 <p class="creator"><span class="creator-label">Created and performed by</span><span class="creator-name">Daniele dell’Erba · FlowSax</span></p>
 </div>
@@ -584,7 +615,7 @@
 <p>Through your Reflection, it takes on a life I could not have given it.</p>
 <p>And should you choose to share it,<br/><em>the conversation continues.</em></p>
 <p><em>…or not.</em></p>
-<div class="next"><a href="#collection">Enter Collection One ↓</a></div>
+<div class="next"><a class="collection-entry-trigger" href="#collection">Enter Collection One ↓</a></div>
 </div>
 </section>
 <section class="page collection-intro" id="collection">
@@ -837,6 +868,25 @@
 <p class="creator"><span class="creator-label">Created and performed by</span><span class="creator-name">Daniele dell’Erba · FlowSax</span></p>
 </div>
 </section>
+
+<div aria-hidden="true" aria-labelledby="entry-title" class="entry-overlay" id="entry-overlay" role="dialog">
+  <div class="entry-card">
+    <button aria-label="Close and enter Collection One" class="brush-close" id="entry-close" type="button"></button>
+    <p class="entry-eyebrow" id="entry-title">Before you enter</p>
+    <div class="entry-copy">
+      <p>Take a moment to tune in.</p>
+      <p>As you move through the Insights,<br/>notice not only what you read,<br/>but what it brings up in you.</p>
+      <p class="entry-list">A thought.<br/>A feeling.<br/>A question.<br/>A memory.<br/>Another way of seeing.</p>
+      <p class="entry-key">Let your Reflection take whatever form feels natural to you.</p>
+      <p>Simply tune in<br/>and notice what arises.</p>
+      <p class="entry-key">This is where your Reflection begins.</p>
+      <p class="entry-signature">The Insights begin with me.<br/>The Reflection continues with you.</p>
+      <p>And if you choose to share it,<br/><em>the conversation continues.</em></p>
+      <p><em>…or not.</em></p>
+    </div>
+  </div>
+</div>
+
 <div aria-hidden="true" aria-labelledby="contact-title" class="contact-modal" id="contact-modal" role="dialog">
 <div class="contact-card">
 <button aria-label="Close contact options" class="contact-close" id="contact-close" type="button">×</button>
@@ -897,6 +947,32 @@
     setWelcomeAudioControl('ready');
   });
 
+
+  const collectionEntryTriggers = document.querySelectorAll('.collection-entry-trigger');
+  const entryOverlay = document.getElementById('entry-overlay');
+  const entryClose = document.getElementById('entry-close');
+  let pendingCollectionTarget = '#collection';
+
+  function openEntryOverlay(event) {
+    event.preventDefault();
+    pendingCollectionTarget = event.currentTarget.getAttribute('href') || '#collection';
+    entryOverlay.classList.add('is-open');
+    entryOverlay.setAttribute('aria-hidden','false');
+    document.body.classList.add('entry-overlay-open');
+    requestAnimationFrame(() => entryClose.focus());
+  }
+
+  function closeEntryOverlayAndContinue() {
+    entryOverlay.classList.remove('is-open');
+    entryOverlay.setAttribute('aria-hidden','true');
+    document.body.classList.remove('entry-overlay-open');
+    const target=document.querySelector(pendingCollectionTarget);
+    if (target) setTimeout(() => target.scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }
+
+  collectionEntryTriggers.forEach((trigger)=>trigger.addEventListener('click',openEntryOverlay));
+  entryClose.addEventListener('click',closeEntryOverlayAndContinue);
+
   const contactTrigger = document.getElementById('contact-trigger');
   const contactModal = document.getElementById('contact-modal');
   const contactClose = document.getElementById('contact-close');
@@ -924,6 +1000,10 @@
   });
 
   document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && entryOverlay.classList.contains('is-open')) {
+      closeEntryOverlayAndContinue();
+      return;
+    }
     if (event.key === 'Escape' && contactModal.classList.contains('is-open')) {
       closeContactModal();
     }
