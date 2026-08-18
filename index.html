@@ -493,6 +493,18 @@
     .brush-close:focus-visible { outline:1px solid var(--verm); outline-offset:3px; }
     body.entry-overlay-open { overflow:hidden; }
 
+    .entry-progress {
+      position: sticky; top: 74px; float: right; margin-right: -34px; width: 3px; height: 96px;
+      background: rgba(166, 43, 32, 0.14); border-radius: 999px; z-index: 2; pointer-events: none;
+    }
+    .entry-progress-mark { display:block; width:3px; height:28px; background:var(--verm); border-radius:65% 40% 70% 35%; transform:translateY(0); transition:transform 100ms linear; opacity:.85; }
+    .entry-enter { appearance:none; border:0; background:transparent; color:var(--verm); margin:8px auto 0; padding:10px 14px; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; font-family:Inter,Arial,sans-serif; font-size:.68rem; letter-spacing:.09em; text-transform:uppercase; }
+    .entry-enter-arrow { position:relative; width:30px; height:16px; display:inline-block; transition:transform 160ms ease; }
+    .entry-enter-arrow::before { content:""; position:absolute; left:1px; top:7px; width:24px; height:2px; background:var(--verm); border-radius:70% 30% 65% 35%; transform:rotate(-1deg); }
+    .entry-enter-arrow::after { content:""; position:absolute; right:1px; top:3px; width:9px; height:9px; border-top:2px solid var(--verm); border-right:2px solid var(--verm); transform:rotate(45deg); border-radius:10% 35% 10% 10%; }
+    .entry-enter:hover .entry-enter-arrow { transform:translateX(2px); }
+    .entry-enter:focus-visible { outline:1px solid var(--verm); outline-offset:3px; border-radius:999px; }
+
     @media (max-width: 640px) {
       body { font-size: 19px; }
       .page { padding: 58px 20px; }
@@ -501,8 +513,12 @@
       .collection-list a { grid-template-columns: 62px 1fr; }
       .actions { flex-direction: column; align-items: center; }
       .button { min-width: 220px; }
-      .entry-card { padding: 48px 27px 38px; max-height: 88svh; }
-      .entry-copy { font-size: 1.08rem; }
+      .entry-card { padding: 44px 30px 30px; max-height: 90svh; }
+      .entry-copy { font-size: 1.02rem; line-height: 1.5; }
+      .entry-copy p { margin-bottom: .88em; }
+      .entry-eyebrow { margin-bottom: 18px; }
+      .entry-progress { top: 60px; margin-right: -19px; height: 78px; }
+      .entry-progress-mark { height: 22px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -839,8 +855,9 @@
 </section>
 
 <div aria-hidden="true" aria-labelledby="entry-title" class="entry-overlay" id="entry-overlay" role="dialog">
-  <div class="entry-card">
+  <div class="entry-card" id="entry-card">
     <button aria-label="Close and enter Collection One" class="brush-close" id="entry-close" type="button"></button>
+    <div aria-hidden="true" class="entry-progress"><span class="entry-progress-mark" id="entry-progress-mark"></span></div>
     <p class="entry-eyebrow" id="entry-title">Before you enter</p>
     <div class="entry-copy">
       <p>Take a moment to tune in.</p>
@@ -852,6 +869,7 @@
       <p class="entry-signature">The Insights begin with me.<br/>The Reflection continues with you.</p>
       <p>And if you choose to share it,<br/><em>the conversation continues.</em></p>
       <p><em>…or not.</em></p>
+      <button aria-label="Enter Collection One" class="entry-enter" id="entry-enter" type="button"><span>Enter</span><span aria-hidden="true" class="entry-enter-arrow"></span></button>
     </div>
   </div>
 </div>
@@ -920,7 +938,20 @@
   const collectionEntryTriggers = document.querySelectorAll('.collection-entry-trigger');
   const entryOverlay = document.getElementById('entry-overlay');
   const entryClose = document.getElementById('entry-close');
+  const entryCard = document.getElementById('entry-card');
+  const entryEnter = document.getElementById('entry-enter');
+  const entryProgressMark = document.getElementById('entry-progress-mark');
   let pendingCollectionTarget = '#collection';
+
+
+  function updateEntryProgress() {
+    if (!entryCard || !entryProgressMark) return;
+    const maxScroll = entryCard.scrollHeight - entryCard.clientHeight;
+    const progress = maxScroll > 0 ? entryCard.scrollTop / maxScroll : 1;
+    const track = entryProgressMark.parentElement;
+    const maxTravel = Math.max(0, track.clientHeight - entryProgressMark.clientHeight);
+    entryProgressMark.style.transform = `translateY(${Math.round(progress * maxTravel)}px)`;
+  }
 
   function openEntryOverlay(event) {
     event.preventDefault();
@@ -928,7 +959,8 @@
     entryOverlay.classList.add('is-open');
     entryOverlay.setAttribute('aria-hidden','false');
     document.body.classList.add('entry-overlay-open');
-    requestAnimationFrame(() => entryClose.focus());
+    entryCard.scrollTop = 0;
+    requestAnimationFrame(() => { updateEntryProgress(); entryClose.focus(); });
   }
 
   function closeEntryOverlayAndContinue() {
@@ -941,6 +973,9 @@
 
   collectionEntryTriggers.forEach((trigger)=>trigger.addEventListener('click',openEntryOverlay));
   entryClose.addEventListener('click',closeEntryOverlayAndContinue);
+  entryEnter.addEventListener('click',closeEntryOverlayAndContinue);
+  entryCard.addEventListener('scroll', updateEntryProgress, { passive: true });
+  window.addEventListener('resize', updateEntryProgress);
 
   const contactTrigger = document.getElementById('contact-trigger');
   const contactModal = document.getElementById('contact-modal');
